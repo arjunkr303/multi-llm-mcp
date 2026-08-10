@@ -1,6 +1,6 @@
 # multi-llm-mcp
 
-An **MCP server** that lets any IDE agent delegate coding tasks to **any LLM** — cloud APIs or local models — through a single unified interface.
+An MCP server that lets any IDE agent delegate coding tasks to any LLM — cloud APIs or local models — through a single unified interface.
 
 Instead of being locked into one model, your coding agent can call NVIDIA NIM, OpenRouter, Groq, DeepSeek, or a local Ollama model for a second opinion, code review, or specialized task.
 
@@ -8,12 +8,12 @@ Instead of being locked into one model, your coding agent can call NVIDIA NIM, O
 
 ## Features
 
-- 🔌 **5 providers out of the box** — NVIDIA NIM, OpenRouter, Groq, DeepSeek, Ollama
-- 🏠 **Local model support** — Use Ollama for fully offline, private coding assistance
-- 🎛️ **Fine-grained control** — Set `temperature`, `max_tokens`, and `system_prompt` per call
-- 🔒 **Secure by design** — API keys stay in environment variables, never in code
-- ⚡ **Connection pooling** — Clients are cached for fast, efficient API calls
-- 🧩 **MCP standard** — Works with any MCP-compatible IDE (Claude Desktop, VS Code, Cursor, Windsurf, etc.)
+- **5 providers out of the box** — NVIDIA NIM, OpenRouter, Groq, DeepSeek, Ollama
+- **Local model support** — Use Ollama for fully offline, private coding assistance
+- **Fine-grained control** — Set `temperature`, `max_tokens`, and `system_prompt` per call
+- **Secure by design** — API keys stay in environment variables, never in code
+- **Connection pooling** — Clients are cached for fast, efficient API calls
+- **MCP standard** — Works with any MCP-compatible IDE (Claude Desktop, VS Code, Cursor, Windsurf, etc.)
 
 ## Supported Providers
 
@@ -86,32 +86,51 @@ Add this to your MCP configuration:
 
 ### 4. Use it
 
-Once connected, your IDE agent will have access to these tools:
+Once connected, your IDE agent has access to the `ask_llm` tool. You can invoke it by prompting your agent naturally. The agent will call the MCP server behind the scenes.
 
-#### `ask_llm` — Delegate a task to any LLM
+#### Tool: `ask_llm`
 
-```
-Ask Groq's Llama 3 to review this Python function for bugs.
-```
+Delegates a coding question, code review, or rewrite task to an external LLM.
 
-Parameters:
+**Parameters:**
+
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `prompt` | *(required)* | The question or task |
+| `prompt` | *(required)* | The question, code snippet, or task |
 | `system_prompt` | `"You are a helpful coding assistant."` | Role context for the model |
 | `provider` | `"ollama"` | Which provider to use |
 | `model` | `"llama3"` | Model name for that provider |
 | `temperature` | `0.0` | 0.0 = deterministic, 1.0 = creative |
 | `max_tokens` | `4096` | Maximum response length |
 
-#### `list_providers` — See available providers
+#### Example Prompts
 
-Returns: `["nvidia", "openrouter", "ollama", "groq", "deepseek"]`
+Use these prompts in your IDE chat to trigger the MCP tool:
 
-#### `list_models` — Browse models for a provider
-
+**Rewrite code using a cloud model:**
 ```
-List the models available on Ollama.
+Use NVIDIA's Llama 3.1 to rewrite the database query in db.py to use async/await.
+```
+
+**Get a code review from a different LLM:**
+```
+Ask Groq's Llama 3 to review server.py for performance issues and suggest improvements.
+```
+
+**Refactor with a local model (Ollama):**
+```
+Use Ollama to refactor the authentication logic in auth.py into smaller, testable functions.
+```
+
+**Generate tests using DeepSeek:**
+```
+Ask DeepSeek Coder to write unit tests for the parse_config function in utils.py.
+```
+
+**Get a second opinion on architecture:**
+```
+Use OpenRouter's Claude to evaluate whether the current project structure follows
+best practices and suggest a better layout.
 ```
 
 ## Using with Ollama (Local Models)

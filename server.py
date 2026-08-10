@@ -60,33 +60,5 @@ def ask_llm(
     return resp.choices[0].message.content
 
 
-@mcp.tool()
-def list_providers() -> list[str]:
-    """List all configured LLM providers available for delegation.
-
-    Returns:
-        A list of provider names that can be passed to ask_llm().
-    """
-    return list(PROVIDERS.keys())
-
-
-@mcp.tool()
-def list_models(provider: str = "ollama") -> list[str]:
-    """List available models for a given provider.
-
-    Not all providers support model listing. Cloud providers may require
-    a valid API key to list models.
-
-    Args:
-        provider: The provider to query (e.g. 'ollama', 'groq').
-
-    Returns:
-        A list of model IDs, or an error message if listing is unsupported.
-    """
-    client = get_client(provider)
-    models = client.models.list()
-    return [m.id for m in models.data]
-
-
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+    mcp.run(transport="stdio")
