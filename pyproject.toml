@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "multi-llm-mcp"
+version = "0.1.0"
+description = "An MCP server that lets IDE agents delegate tasks to any LLM — cloud APIs or local models."
+readme = "README.MD"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Arjun K R"},
+]
+keywords = ["mcp", "llm", "ai", "coding-assistant", "ollama", "openrouter", "nvidia", "groq", "deepseek"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "mcp>=1.0.0",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/arjunkr303/multi-llm-mcp"
+Repository = "https://github.com/arjunkr303/multi-llm-mcp"
+Issues = "https://github.com/arjunkr303/multi-llm-mcp/issues"

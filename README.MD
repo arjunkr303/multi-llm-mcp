@@ -1,0 +1,138 @@
+# multi-llm-mcp
+
+An **MCP server** that lets any IDE agent delegate coding tasks to **any LLM** — cloud APIs or local models — through a single unified interface.
+
+Instead of being locked into one model, your coding agent can call NVIDIA NIM, OpenRouter, Groq, DeepSeek, or a local Ollama model for a second opinion, code review, or specialized task.
+
+---
+
+## Features
+
+- 🔌 **5 providers out of the box** — NVIDIA NIM, OpenRouter, Groq, DeepSeek, Ollama
+- 🏠 **Local model support** — Use Ollama for fully offline, private coding assistance
+- 🎛️ **Fine-grained control** — Set `temperature`, `max_tokens`, and `system_prompt` per call
+- 🔒 **Secure by design** — API keys stay in environment variables, never in code
+- ⚡ **Connection pooling** — Clients are cached for fast, efficient API calls
+- 🧩 **MCP standard** — Works with any MCP-compatible IDE (Claude Desktop, VS Code, Cursor, Windsurf, etc.)
+
+## Supported Providers
+
+| Provider | Type | Models |
+|----------|------|--------|
+| [Ollama](https://ollama.com/) | Local | Llama 3, CodeLlama, Mistral, Gemma, etc. |
+| [NVIDIA NIM](https://build.nvidia.com/) | Cloud | Llama 3.1 405B, Mixtral, Code Llama, etc. |
+| [OpenRouter](https://openrouter.ai/) | Cloud | Claude, GPT-4, Gemini, 200+ models |
+| [Groq](https://groq.com/) | Cloud | Llama 3, Mixtral, Gemma (ultra-fast inference) |
+| [DeepSeek](https://deepseek.com/) | Cloud | DeepSeek Coder, DeepSeek Chat |
+
+## Quick Start
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/arjunkr303/multi-llm-mcp.git
+cd multi-llm-mcp
+
+python -m venv venv
+source venv/bin/activate   # On Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+### 2. Configure API keys
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your API keys. You only need keys for the providers you want to use. Ollama requires no API key.
+
+```env
+NVIDIA_API_KEY=your_nvidia_key_here
+OPENROUTER_API_KEY=your_openrouter_key_here
+GROQ_API_KEY=your_groq_key_here
+DEEPSEEK_API_KEY=your_deepseek_key_here
+```
+
+### 3. Connect to your IDE
+
+Add this to your MCP configuration:
+
+**Claude Desktop** (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "multi-llm-gateway": {
+      "command": "/path/to/multi-llm-mcp/venv/bin/python",
+      "args": ["/path/to/multi-llm-mcp/server.py"]
+    }
+  }
+}
+```
+
+**VS Code / Cursor** (`.vscode/mcp.json` or IDE MCP settings):
+```json
+{
+  "mcpServers": {
+    "multi-llm-gateway": {
+      "command": "/path/to/multi-llm-mcp/venv/bin/python",
+      "args": ["/path/to/multi-llm-mcp/server.py"]
+    }
+  }
+}
+```
+
+> Replace `/path/to/multi-llm-mcp` with the actual path where you cloned the repo.
+
+### 4. Use it
+
+Once connected, your IDE agent will have access to these tools:
+
+#### `ask_llm` — Delegate a task to any LLM
+
+```
+Ask Groq's Llama 3 to review this Python function for bugs.
+```
+
+Parameters:
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `prompt` | *(required)* | The question or task |
+| `system_prompt` | `"You are a helpful coding assistant."` | Role context for the model |
+| `provider` | `"ollama"` | Which provider to use |
+| `model` | `"llama3"` | Model name for that provider |
+| `temperature` | `0.0` | 0.0 = deterministic, 1.0 = creative |
+| `max_tokens` | `4096` | Maximum response length |
+
+#### `list_providers` — See available providers
+
+Returns: `["nvidia", "openrouter", "ollama", "groq", "deepseek"]`
+
+#### `list_models` — Browse models for a provider
+
+```
+List the models available on Ollama.
+```
+
+## Using with Ollama (Local Models)
+
+For fully private, offline coding assistance:
+
+```bash
+# Install Ollama: https://ollama.com/download
+ollama pull llama3
+ollama pull codellama
+```
+
+Then use `provider: "ollama"` with any pulled model name. No API key needed.
+
+## Security
+
+- API keys are loaded from environment variables only
+- `.env` is gitignored and never committed
+- No secrets are hardcoded in source code
+- All API communication happens server-side only
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.
