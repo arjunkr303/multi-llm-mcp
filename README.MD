@@ -36,7 +36,7 @@ cd multi-llm-mcp
 python -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 2. Configure API keys
@@ -64,7 +64,7 @@ Add this to your MCP configuration:
   "mcpServers": {
     "multi-llm-gateway": {
       "command": "/path/to/multi-llm-mcp/venv/bin/python",
-      "args": ["/path/to/multi-llm-mcp/server.py"]
+      "args": ["-m", "multi_llm_mcp"]
     }
   }
 }
@@ -76,7 +76,7 @@ Add this to your MCP configuration:
   "mcpServers": {
     "multi-llm-gateway": {
       "command": "/path/to/multi-llm-mcp/venv/bin/python",
-      "args": ["/path/to/multi-llm-mcp/server.py"]
+      "args": ["-m", "multi_llm_mcp"]
     }
   }
 }
@@ -114,7 +114,7 @@ Use NVIDIA's Llama 3.1 to rewrite the database query in db.py to use async/await
 
 **Get a code review from a different LLM:**
 ```
-Ask Groq's Llama 3 to review server.py for performance issues and suggest improvements.
+Ask Groq's Llama 3 to review src/multi_llm_mcp/server.py for performance issues and suggest improvements.
 ```
 
 **Refactor with a local model (Ollama):**
@@ -152,6 +152,29 @@ Then use `provider: "ollama"` with any pulled model name. No API key needed.
 - No secrets are hardcoded in source code
 - All API communication happens server-side only
 
+## Project Structure
+
+```
+multi-llm-mcp/
+├── src/multi_llm_mcp/      # MCP server package
+│   ├── __init__.py
+│   ├── __main__.py         # entry point: python -m multi_llm_mcp
+│   ├── server.py           # FastMCP server & the ask_llm tool
+│   └── providers.py        # provider registry & client factory
+├── tests/                  # pytest suite
+├── pyproject.toml
+├── .env.example
+└── LICENSE
+```
+
+## Running Tests
+
+```bash
+pip install -e . pytest
+pytest
+```
+
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+

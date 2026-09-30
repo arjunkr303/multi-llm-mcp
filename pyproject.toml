@@ -35,5 +35,8 @@ Homepage = "https://github.com/arjunkr303/multi-llm-mcp"
 Repository = "https://github.com/arjunkr303/multi-llm-mcp"
 Issues = "https://github.com/arjunkr303/multi-llm-mcp/issues"
 
-[tool.setuptools]
-py-modules = ["server", "providers"]
+[project.scripts]
+multi-llm-mcp = "multi_llm_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
