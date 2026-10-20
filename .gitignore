@@ -12,6 +12,7 @@ __pycache__/
 dist/
 .venv/
 build/
+.pytest_cache/
 
 # IDE & editor configs
 .vscode/

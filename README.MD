@@ -14,6 +14,7 @@ Instead of being locked into one model, your coding agent can call NVIDIA NIM, O
 - **Secure by design** — API keys stay in environment variables, never in code
 - **Connection pooling** — Clients are cached for fast, efficient API calls
 - **MCP standard** — Works with any MCP-compatible IDE (Claude Desktop, VS Code, Cursor, Windsurf, etc.)
+- **Standalone agent skill** — A zero-dependency CLI variant (`multi-llm-skill/`) that works in any agent harness, even without MCP support
 
 ## Supported Providers
 
@@ -133,6 +134,29 @@ Use OpenRouter's Claude to evaluate whether the current project structure follow
 best practices and suggest a better layout.
 ```
 
+## Agent Skill — use without MCP
+
+`multi-llm-skill/` is a standalone agent skill that bundles the same provider
+logic into a single zero-dependency CLI (Python stdlib only — no pip installs,
+no server process). It gives the same delegation capability to **any** agent:
+
+- **Native skill harnesses** (Claude Code, OpenCode, etc.) — copy the folder
+  into your skills directory and it auto-triggers on "second opinion",
+  "independent review", and similar requests
+- **Any other agent** (Cursor, Codex CLI, Cline, Gemini CLI, ...) — paste one
+  ready-made snippet into the agent's rules file (`AGENTS.md`, `CLAUDE.md`,
+  `.cursorrules`, ...)
+- **Standalone** — useful right from the terminal:
+
+```bash
+python multi-llm-skill/scripts/ask_llm.py --list-providers
+python multi-llm-skill/scripts/ask_llm.py --system-prompt "You are a senior staff engineer." --prompt "Review this function for bugs: <code>"
+```
+
+Both the MCP server and the skill read the same `.env` keys and call the same
+provider endpoints, so they can coexist independently. Full instructions:
+[multi-llm-skill/README.md](multi-llm-skill/README.md).
+
 ## Using with Ollama (Local Models)
 
 For fully private, offline coding assistance:
@@ -161,6 +185,10 @@ multi-llm-mcp/
 │   ├── __main__.py         # entry point: python -m multi_llm_mcp
 │   ├── server.py           # FastMCP server & the ask_llm tool
 │   └── providers.py        # provider registry & client factory
+├── multi-llm-skill/        # standalone agent skill (zero deps, no MCP)
+│   ├── SKILL.md            # skill metadata + agent instructions
+│   ├── scripts/ask_llm.py  # the CLI the agent runs
+│   └── README.md           # skill install & usage
 ├── tests/                  # pytest suite
 ├── pyproject.toml
 ├── .env.example
